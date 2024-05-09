@@ -13,6 +13,9 @@ app.use("/products", proRouter1);
 const proRouter2 = require("./routes/clients");
 app.use("/clients", proRouter2);
 
+const proRouter3 = require("./routes/billing");
+app.use("/billingdeets", proRouter3);
+
 db.sequelize.sync().then(() => {
   app.listen(3001, () => {
     console.log("Everything is working well");
