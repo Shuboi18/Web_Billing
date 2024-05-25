@@ -23,4 +23,11 @@ router.post("/deleteId/:id", async (req, res) => {
   const id = req.params.id;
   await Product_Master.destroy({ where: { id: id } });
 });
+
+router.post("/updateId/:id", async (req, res) => {
+  const id = req.params.id;
+  await Product_Master.update(req.body, { where: { id: id } });
+  res.json("Updated Successfully");
+});
+
 module.exports = router;

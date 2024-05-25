@@ -1,27 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import axios from "axios";
+import * as Yup from "yup";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 
 function EditingCus() {
   let { id } = useParams();
-  const [customerDeets, setDeets] = useState([]);
-  useEffect(() => {
-    axios.get(`http://localhost:3001/clients/byId/${id}`).then((response) => {
-      setDeets(response.data);
-    });
-  });
-
-  const initial = {
+  const [initialValues, setInitialValues] = useState({
     cname: "",
     cphone: "",
     cemail: "",
-    caddress: "",
-  };
+    caddress1: "",
+    caddress2: "",
+    caddress3: "",
+    cpincode: "",
+  });
   const validatingdata = Yup.object().shape({
     cname: Yup.string().min(5).max(75).required(),
-    cphone: Yup.string().required(),
+    cphone: Yup.number().required(),
     cemail: Yup.string().max(40),
     caddress1: Yup.string().max(30),
     caddress2: Yup.string().max(30),
@@ -29,117 +25,109 @@ function EditingCus() {
     cpincode: Yup.string(),
   });
 
-  const submitted = (data) => {
-    axios.post("http://localhost:3001/clients", data).then((response) => {
-      console.log("IT WORKED");
+  useEffect(() => {
+    axios.get(`http://localhost:3001/clients/byId/${id}`).then((response) => {
+      setInitialValues(response.data);
     });
+  }, [id]);
+
+  const submitted = (data) => {
+    axios
+      .post(`http://localhost:3001/clients/updateId/${id}`, data)
+      .then((response) => {
+        console.log("IT WORKED");
+      });
   };
+
   return (
-    <>
-      <div>
-        <Formik
-          initialValues={initial}
-          onSubmit={submitted}
-          validationSchema={validatingdata}
-        >
-          <Form>
-            <input type="text" value={customerDeets.cname}></input>
-            <br></br>
-            <label>Enter the edited Client Name</label>
-            <br></br>
-            <br></br>
+    <Formik
+      enableReinitialize
+      initialValues={initialValues}
+      validationSchema={validatingdata}
+      onSubmit={submitted}
+    >
+      {({ values, handleChange }) => (
+        <Form>
+          <div>
             <ErrorMessage className="error" name="cname" component="span" />
             <br></br>
             <Field
-              className="field"
+              as="textarea"
               name="cname"
-              placeholder="Enter the edited client Name"
-            ></Field>
-            <br></br>
-            <br></br>
-            <textarea value={customerDeets.cphone}></textarea>
-            <br></br>
-            <label>Enter the edited Phone Number</label>
-            <br></br>
+              value={values.cname}
+              onChange={handleChange}
+            />
+            <br />
+            <br />
+            <br />
             <ErrorMessage className="error" name="cphone" component="span" />
-            <br></br>
+            <br />
             <Field
-              className="field"
+              as="textarea"
               name="cphone"
-              placeholder="Enter the edited Phone number"
-            ></Field>
-            <br></br>
-            <br></br>
-            <textarea value={customerDeets.cemail}></textarea>
-            <br></br>
-            <label>Enter the edited mail address</label>
-            <br></br>
+              value={values.cphone}
+              onChange={handleChange}
+            />
+            <br />
+            <br />
             <ErrorMessage className="error" name="cemail" component="span" />
-            <br></br>
+            <br />
             <Field
-              className="field"
+              as="textarea"
               name="cemail"
-              placeholder="Enter the edited Email address"
-            ></Field>
-            <br></br>
-            <br></br>
-            <textarea value={customerDeets.caddress1}></textarea>
-            <br></br>
-            <label>Enter the edited Client address line 1</label>
-            <br></br>
+              value={values.cemail}
+              onChange={handleChange}
+            />
+            <br />
+            <br />
             <ErrorMessage className="error" name="caddress1" component="span" />
-            <br></br>
+            <br />
             <Field
-              className="field"
+              as="textarea"
               name="caddress1"
-              placeholder="Enter the edited first line of Physical address"
-            ></Field>
-            <br></br>
-            <br></br>
-            <textarea value={customerDeets.caddress2}></textarea>
-            <br></br>
-            <label>Enter the edited Client address line 2</label>
-            <br></br>
+              value={values.caddress1}
+              onChange={handleChange}
+            />
+            <br />
+            <br />
+            <br />
             <ErrorMessage className="error" name="caddress2" component="span" />
-            <br></br>
+            <br />
             <Field
-              className="field"
+              as="textarea"
               name="caddress2"
-              placeholder="Enter the edited second line of Physical address"
-            ></Field>
-            <br></br>
-            <br></br>
-            <textarea value={customerDeets.caddress3}></textarea>
-            <br></br>
-            <label>Enter the edited Client address line 3</label>
-            <br></br>
+              value={values.caddress2}
+              onChange={handleChange}
+            />
+            <br />
+            <br />
             <ErrorMessage className="error" name="caddress3" component="span" />
-            <br></br>
+            <br />
             <Field
-              className="field"
+              as="textarea"
               name="caddress3"
-              placeholder="Enter the edited third line of Physical address"
-            ></Field>
-            <br></br>
-            <br></br>
-            <textarea value={customerDeets.cpincode}></textarea>
-            <br></br>
-            <label>Enter the edited pincode</label>
-            <br></br>
+              value={values.caddress3}
+              onChange={handleChange}
+            />
+            <br />
+            <br />
+            <br />
             <ErrorMessage className="error" name="cpincode" component="span" />
-            <br></br>
+            <br />
             <Field
-              className="field"
+              as="textarea"
               name="cpincode"
-              placeholder="Enter the edited pincode"
-            ></Field>
-            <br></br>
-            <br></br>
+              value={values.cpincode}
+              onChange={handleChange}
+            />
+            <br />
+            <br />
+            <br />
             <button type="submit">Save Edited Details</button>
-          </Form>
-        </Formik>
-      </div>
-    </>
+          </div>
+        </Form>
+      )}
+    </Formik>
   );
 }
 
